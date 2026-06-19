@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Quién tiene cómo ahorrar en Colombia? | Pulso Social DANE</title>
+<meta name="description" content="Visualizador de la encuesta Pulso Social del DANE sobre capacidad de ahorro de los colombianos, por sexo, edad, tamaño del hogar y ciudad.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700;8..60,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ee-red:#C8102E;
+  --ee-red-dark:#970C22;
+  --ee-red-tint:#FBE7EA;
+  --ink:#1A1A1A;
+  --ink-soft:#5B564E;
+  --paper:#FFFFFF;
+  --paper-warm:#F7F4ED;
+  --paper-warm2:#F1ECE1;
+  --line:#E3DDCE;
+  --no-bar:#D8D2C2;
+  --sin-bar:#2B2B2E;
+  --good:#1F7A4D;
+  --ok:#B6862C;
+  --caution:#9C3B2E;
+  --font-display:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(26,22,12,.06), 0 8px 24px -16px rgba(26,22,12,.18);
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--paper-warm);
+  color:var(--ink);
+  font-family:var(--font-sans);
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  max-width:880px;
+  margin:0 auto;
+  padding:0 16px 48px;
+}
+a{color:var(--ee-red-dark);}
+
+/* ===== Header ===== */
+.topline{
+  height:5px;
+  background:linear-gradient(90deg, var(--ee-red) 0%, var(--ee-red) 60%, var(--ee-red-dark) 100%);
+}
+header.masthead{
+  padding:28px 16px 22px;
+  max-width:880px;
+  margin:0 auto;
+}
+.eyebrow{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--font-sans);
+  font-weight:800;
+  font-size:11.5px;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  color:var(--ee-red-dark);
+  margin:0 0 10px;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--ee-red);}
+.eyebrow .sep{color:var(--ink-soft); opacity:.5; font-weight:500;}
+.eyebrow .muted{color:var(--ink-soft); font-weight:600; letter-spacing:.08em;}
+h1{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(26px, 5.2vw, 40px);
+  line-height:1.12;
+  margin:0 0 12px;
+  color:var(--ink);
+  letter-spacing:-.01em;
+}
+.dek{
+  font-size:15px;
+  color:var(--ink-soft);
+  max-width:62ch;
+  margin:0;
+}
+.dek b{color:var(--ink);font-weight:600;}
+
+/* ===== Hero stat (thesis) ===== */
+.hero{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+  margin:22px 0 28px;
+  box-shadow:var(--shadow);
+}
+.hero-cell{
+  background:var(--paper);
+  padding:18px 14px 16px;
+  text-align:center;
+}
+.hero-cell.is-si{background:var(--ee-red); }
+.hero-num{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(26px,6vw,34px);
+  line-height:1;
+  color:var(--ink);
+}
+.hero-cell.is-si .hero-num{color:#fff;}
+.hero-label{
+  margin-top:7px;
+  font-size:11.5px;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.hero-cell.is-si .hero-label{color:rgba(255,255,255,.86);}
+.hero-foot{
+  grid-column:1 / -1;
+  background:var(--paper-warm2);
+  font-size:11.5px;
+  color:var(--ink-soft);
+  text-align:center;
+  padding:7px 10px;
+}
+
+/* ===== Tabs ===== */
+.tabs{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:2px 2px 10px;
+  margin-bottom:6px;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{
+  flex:0 0 auto;
+  font-family:var(--font-sans);
+  font-weight:700;
+  font-size:13.5px;
+  padding:9px 16px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  color:var(--ink-soft);
+  cursor:pointer;
+  transition:background .15s, color .15s, border-color .15s;
+  white-space:nowrap;
+}
+.tab:hover{border-color:var(--ee-red);}
+.tab:focus-visible{outline:2px solid var(--ee-red); outline-offset:2px;}
+.tab[aria-selected="true"]{
+  background:var(--ink);
+  border-color:var(--ink);
+  color:#fff;
+}
+
+/* ===== Panel ===== */
+.panel{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:6px 4px 8px;
+}
+.panel-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:10px;
+  padding:14px 14px 10px;
+  border-bottom:1px solid var(--line);
+}
+.panel-title{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:17px;
+}
+.sort-btn{
+  font-family:var(--font-sans);
+  font-size:12px;
+  font-weight:700;
+  color:var(--ee-red-dark);
+  background:var(--ee-red-tint);
+  border:none;
+  border-radius:7px;
+  padding:6px 10px;
+  cursor:pointer;
+  white-space:nowrap;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.sort-btn:hover{background:#f6d9dd;}
+.sort-btn:focus-visible{outline:2px solid var(--ee-red); outline-offset:2px;}
+
+.bench-note{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:11.5px;
+  color:var(--ink-soft);
+  padding:10px 14px 0;
+}
+.bench-note .swatch{
+  width:14px;height:0;border-top:2px dashed var(--ee-red-dark);
+  display:inline-block;
+}
+
+.rows{padding:6px 4px 4px;}
+.row{
+  border-bottom:1px solid var(--line);
+}
+.row:last-child{border-bottom:none;}
+.row-main{
+  display:grid;
+  grid-template-columns: minmax(86px,128px) 1fr 50px 16px;
+  align-items:center;
+  gap:10px;
+  padding:11px 10px;
+  cursor:pointer;
+  background:transparent;
+  border:none;
+  width:100%;
+  text-align:left;
+  font-family:var(--font-sans);
+  -webkit-tap-highlight-color:transparent;
+}
+.row-main:hover{background:var(--paper-warm);}
+.row-main:focus-visible{outline:2px solid var(--ee-red); outline-offset:-2px;}
+.row-label{
+  font-size:13.5px;
+  font-weight:600;
+  color:var(--ink);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.row-label.is-total{color:var(--ee-red-dark);}
+.bar-wrap{position:relative; height:22px;}
+.bar-track{
+  position:absolute; inset:0;
+  display:flex;
+  border-radius:4px;
+  overflow:hidden;
+  background:var(--paper-warm2);
+}
+.seg{height:100%;}
+.seg-si{background:var(--ee-red);}
+.seg-no{background:var(--no-bar);}
+.seg-sin{background:var(--sin-bar);}
+.bench-line{
+  position:absolute; top:-3px; bottom:-3px; width:0;
+  border-left:2px dashed var(--ink);
+  opacity:.55;
+}
+.row-value{
+  font-variant-numeric:tabular-nums;
+  font-weight:800;
+  font-size:14px;
+  color:var(--ee-red-dark);
+  text-align:right;
+}
+.q-dot{
+  width:8px;height:8px;border-radius:50%;
+  justify-self:center;
+}
+.q-good{background:var(--good);}
+.q-ok{background:var(--ok);}
+.q-caution{background:var(--caution);}
+
+.row-detail{
+  padding:0 14px 16px 14px;
+  animation:reveal .15s ease;
+}
+@keyframes reveal{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+.detail-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:4px;
+}
+.detail-cell{
+  background:var(--paper-warm);
+  border-radius:8px;
+  padding:9px 10px;
+  border-left:3px solid var(--line);
+}
+.detail-cell.c-si{border-left-color:var(--ee-red);}
+.detail-cell.c-no{border-left-color:var(--no-bar);}
+.detail-cell.c-sin{border-left-color:var(--sin-bar);}
+.detail-k{font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);}
+.detail-v{font-family:var(--font-display); font-weight:700; font-size:18px; margin:2px 0 1px;}
+.detail-sub{font-size:11px; color:var(--ink-soft);}
+.detail-sub .q-dot{display:inline-block; vertical-align:middle; margin-right:4px;}
+
+/* ===== Legend ===== */
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  padding:14px 14px 6px;
+  font-size:12px;
+  color:var(--ink-soft);
+  border-top:1px solid var(--line);
+  margin-top:4px;
+}
+.legend span{display:inline-flex; align-items:center; gap:6px;}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+.li-si{background:var(--ee-red);} .li-no{background:var(--no-bar);} .li-sin{background:var(--sin-bar);}
+
+/* ===== Quality key ===== */
+.quality-key{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  padding:0 14px 14px;
+  font-size:11.5px;
+  color:var(--ink-soft);
+}
+.quality-key span{display:inline-flex; align-items:center; gap:5px;}
+
+/* ===== Footer / methodology ===== */
+.meta{
+  margin-top:22px;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:var(--paper);
+  overflow:hidden;
+}
+.meta summary{
+  list-style:none;
+  cursor:pointer;
+  padding:13px 16px;
+  font-weight:700;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:var(--ink);
+}
+.meta summary::-webkit-details-marker{display:none;}
+.meta summary .chev{transition:transform .15s; color:var(--ee-red-dark);}
+.meta[open] summary .chev{transform:rotate(90deg);}
+.meta-body{
+  padding:0 16px 16px;
+  font-size:12.5px;
+  color:var(--ink-soft);
+}
+.meta-body p{margin:0 0 9px;}
+.meta-body p:last-child{margin-bottom:0;}
+.src-line{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:6px;
+  padding:14px 16px 0;
+  font-size:11.5px;
+  color:var(--ink-soft);
+}
+
+footer.credit{
+  text-align:center;
+  font-size:11px;
+  color:var(--ink-soft);
+  opacity:.75;
+  margin-top:22px;
+}
+
+/* ===== Mobile tightening ===== */
+@media (max-width:480px){
+  header.masthead{padding:22px 14px 16px;}
+  .row-main{grid-template-columns:minmax(70px,98px) 1fr 44px 14px; gap:7px; padding:10px 8px;}
+  .row-label{font-size:12.5px;}
+  .row-value{font-size:12.5px;}
+  .detail-grid{grid-template-columns:1fr; gap:6px;}
+  .hero-num{font-size:24px;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+}
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header class="masthead">
+  <p class="eyebrow"><span class="dot"></span>Pulso social<span class="sep">·</span><span class="muted">DANE</span></p>
+  <h1>¿Quién tiene cómo ahorrar en Colombia?</h1>
+  <p class="dek" id="dek"></p>
+</header>
+
+<div class="wrap">
+
+  <section class="hero" id="hero" aria-label="Resultado nacional"></section>
+
+  <div class="tabs" id="tabs" role="tablist" aria-label="Segmentar por"></div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <span class="panel-title" id="panelTitle">Sexo</span>
+      <button class="sort-btn" id="sortBtn" hidden></button>
+    </div>
+    <p class="bench-note"><span class="swatch"></span> Línea = promedio nacional de "Sí puede ahorrar" (<span id="benchPct"></span>)</p>
+    <div class="rows" id="rows"></div>
+    <div class="legend">
+      <span><i class="li-si"></i>Sí, puede ahorrar</span>
+      <span><i class="li-no"></i>No puede ahorrar</span>
+      <span><i class="li-sin"></i>No tiene ingresos</span>
+    </div>
+    <div class="quality-key">
+      <span><i class="q-dot q-good" style="width:8px;height:8px;border-radius:50%;display:inline-block;"></i>Precisión excelente/buena</span>
+      <span><i class="q-dot q-ok" style="width:8px;height:8px;border-radius:50%;display:inline-block;"></i>Aceptable</span>
+      <span><i class="q-dot q-caution" style="width:8px;height:8px;border-radius:50%;display:inline-block;"></i>Usar con cautela</span>
+    </div>
+  </section>
+
+  <details class="meta" id="metaBox">
+    <summary>Ficha técnica y fuente <span class="chev">›</span></summary>
+    <div class="meta-body" id="metaBody"></div>
+  </details>
+
+  <footer class="credit">Visualizador construido sobre datos de DANE · Pulso Social</footer>
+</div>
+
+<script id="data-blob" type="application/json">{"title": "cc8. ¿Actualmente tiene posibilidades de ahorrar alguna parte de sus ingresos?", "subtitle": "Totales y porcentajes por sexo, edad, tamaño del hogar de los jefes de hogar y sus cónyuges. Total 23 ciudades y sus áreas metropolitanas. Abril de 2023.", "national_benchmark": {"name": "Total 23 ciudades y sus áreas metropolitanas", "si": {"total": 1582889.0, "pct": 0.123, "cve": 0.071, "ls": 14.0, "li": 10.6}, "no": {"total": 9953205.0, "pct": 0.773, "cve": 0.02, "ls": 80.3, "li": 74.3}, "sin_ingresos": {"total": 1344027.0, "pct": 0.104, "cve": 0.073, "ls": 11.9, "li": 8.9}, "total_general": 12880121.0}, "segments": {"sexo": {"label": "Sexo", "rows": [{"name": "Hombres", "si": {"total": 875333.0, "pct": 0.166, "cve": 0.098, "ls": 19.9, "li": 13.4}, "no": {"total": 4107019.0, "pct": 0.781, "cve": 0.036, "ls": 83.6, "li": 72.6}, "sin_ingresos": {"total": 275195.0, "pct": 0.052, "cve": 0.131, "ls": 6.6, "li": 3.9}, "total_general": 5257547.0}, {"name": "Mujeres", "si": {"total": 707556.0, "pct": 0.093, "cve": 0.094, "ls": 11.0, "li": 7.6}, "no": {"total": 5846186.0, "pct": 0.767, "cve": 0.031, "ls": 81.4, "li": 72.0}, "sin_ingresos": {"total": 1068833.0, "pct": 0.14, "cve": 0.082, "ls": 16.3, "li": 11.8}, "total_general": 7622574.0}]}, "edad": {"label": "Edad", "rows": [{"name": "10 a 24 años", "si": {"total": 72770.0, "pct": 0.181, "cve": 0.259, "ls": 27.4, "li": 8.9}, "no": {"total": 276991.0, "pct": 0.691, "cve": 0.156, "ls": 90.1, "li": 48.0}, "sin_ingresos": {"total": 51270.0, "pct": 0.128, "cve": 0.241, "ls": 18.8, "li": 6.7}, "total_general": 401030.0}, {"name": "25 a 54 años", "si": {"total": 1158372.0, "pct": 0.151, "cve": 0.086, "ls": 17.7, "li": 12.5}, "no": {"total": 5917149.0, "pct": 0.771, "cve": 0.031, "ls": 81.8, "li": 72.4}, "sin_ingresos": {"total": 597213.0, "pct": 0.078, "cve": 0.113, "ls": 9.5, "li": 6.1}, "total_general": 7672734.0}, {"name": "55 años o más", "si": {"total": 351746.0, "pct": 0.073, "cve": 0.132, "ls": 9.2, "li": 5.4}, "no": {"total": 3759066.0, "pct": 0.782, "cve": 0.041, "ls": 84.5, "li": 71.9}, "sin_ingresos": {"total": 695545.0, "pct": 0.145, "cve": 0.086, "ls": 16.9, "li": 12.0}, "total_general": 4806358.0}]}, "hogar": {"label": "Tamaño del hogar", "rows": [{"name": "Unipersonal", "si": {"total": 240358.0, "pct": 0.167, "cve": 0.152, "ls": 21.7, "li": 11.7}, "no": {"total": 1098582.0, "pct": 0.765, "cve": 0.067, "ls": 86.6, "li": 66.5}, "sin_ingresos": {"total": 96426.0, "pct": 0.067, "cve": 0.226, "ls": 9.7, "li": 3.7}, "total_general": 1435366.0}, {"name": "Dos personas", "si": {"total": 425549.0, "pct": 0.147, "cve": 0.135, "ls": 18.6, "li": 10.8}, "no": {"total": 2158969.0, "pct": 0.747, "cve": 0.052, "ls": 82.3, "li": 67.0}, "sin_ingresos": {"total": 307296.0, "pct": 0.106, "cve": 0.116, "ls": 13.0, "li": 8.2}, "total_general": 2891814.0}, {"name": "Tres personas", "si": {"total": 521251.0, "pct": 0.145, "cve": 0.144, "ls": 18.6, "li": 10.4}, "no": {"total": 2754873.0, "pct": 0.767, "cve": 0.046, "ls": 83.6, "li": 69.8}, "sin_ingresos": {"total": 315403.0, "pct": 0.088, "cve": 0.151, "ls": 11.4, "li": 6.2}, "total_general": 3591527.0}, {"name": "4 o más", "si": {"total": 395730.0, "pct": 0.08, "cve": 0.12, "ls": 9.9, "li": 6.1}, "no": {"total": 3940781.0, "pct": 0.794, "cve": 0.044, "ls": 86.3, "li": 72.6}, "sin_ingresos": {"total": 624903.0, "pct": 0.126, "cve": 0.102, "ls": 15.1, "li": 10.1}, "total_general": 4961414.0}]}, "ciudad": {"label": "Ciudad", "rows": [{"name": "Armenia", "si": {"total": 23425.0, "pct": 0.145, "cve": 0.12, "ls": 17.9, "li": 11.1}, "no": {"total": 133813.0, "pct": 0.826, "cve": 0.026, "ls": 86.8, "li": 78.4}, "sin_ingresos": {"total": 4778.0, "pct": 0.029, "cve": 0.22, "ls": 4.2, "li": 1.7}, "total_general": 162016.0}, {"name": "Barranquilla AM", "si": {"total": 162350.0, "pct": 0.188, "cve": 0.088, "ls": 22.1, "li": 15.6}, "no": {"total": 559662.0, "pct": 0.649, "cve": 0.04, "ls": 70.0, "li": 59.9}, "sin_ingresos": {"total": 140102.0, "pct": 0.163, "cve": 0.1, "ls": 19.4, "li": 13.1}, "total_general": 862114.0}, {"name": "Bogotá D.C.", "si": {"total": 787824.0, "pct": 0.181, "cve": 0.078, "ls": 20.8, "li": 15.3}, "no": {"total": 3363017.0, "pct": 0.771, "cve": 0.024, "ls": 80.8, "li": 73.5}, "sin_ingresos": {"total": 209129.0, "pct": 0.048, "cve": 0.147, "ls": 6.2, "li": 3.4}, "total_general": 4359969.0}, {"name": "Bucaramanga AM", "si": {"total": 34672.0, "pct": 0.056, "cve": 0.176, "ls": 7.5, "li": 3.6}, "no": {"total": 568768.0, "pct": 0.913, "cve": 0.028, "ls": 96.3, "li": 86.2}, "sin_ingresos": {"total": 19695.0, "pct": 0.032, "cve": 0.193, "ls": 4.4, "li": 2.0}, "total_general": 623134.0}, {"name": "Cali AM", "si": {"total": 147817.0, "pct": 0.127, "cve": 0.092, "ls": 15.1, "li": 10.4}, "no": {"total": 839704.0, "pct": 0.724, "cve": 0.031, "ls": 76.9, "li": 68.0}, "sin_ingresos": {"total": 171849.0, "pct": 0.148, "cve": 0.096, "ls": 17.6, "li": 12.0}, "total_general": 1159370.0}, {"name": "Cartagena", "si": {"total": 58530.0, "pct": 0.131, "cve": 0.105, "ls": 15.8, "li": 10.4}, "no": {"total": 281291.0, "pct": 0.628, "cve": 0.037, "ls": 67.4, "li": 58.2}, "sin_ingresos": {"total": 108087.0, "pct": 0.241, "cve": 0.069, "ls": 27.4, "li": 20.9}, "total_general": 447908.0}, {"name": "Cúcuta AM", "si": {"total": 31670.0, "pct": 0.068, "cve": 0.167, "ls": 9.1, "li": 4.6}, "no": {"total": 408781.0, "pct": 0.883, "cve": 0.032, "ls": 93.8, "li": 82.8}, "sin_ingresos": {"total": 22424.0, "pct": 0.048, "cve": 0.138, "ls": 6.2, "li": 3.5}, "total_general": 462875.0}, {"name": "Florencia", "si": {"total": 4601.0, "pct": 0.057, "cve": 0.142, "ls": 7.3, "li": 4.1}, "no": {"total": 61482.0, "pct": 0.767, "cve": 0.032, "ls": 81.4, "li": 71.9}, "sin_ingresos": {"total": 14084.0, "pct": 0.176, "cve": 0.082, "ls": 20.4, "li": 14.7}, "total_general": 80168.0}, {"name": "Ibagué", "si": {"total": 15525.0, "pct": 0.056, "cve": 0.155, "ls": 7.4, "li": 3.9}, "no": {"total": 259116.0, "pct": 0.941, "cve": 0.025, "ls": 98.7, "li": 89.5}, "sin_ingresos": {"total": 644.0, "pct": 0.002, "cve": 0.845, "ls": 0.6, "li": 0.0}, "total_general": 275286.0}, {"name": "Manizales AM", "si": {"total": 18861.0, "pct": 0.072, "cve": 0.125, "ls": 9.0, "li": 5.5}, "no": {"total": 239828.0, "pct": 0.921, "cve": 0.022, "ls": 96.1, "li": 88.1}, "sin_ingresos": {"total": 1824.0, "pct": 0.007, "cve": 0.294, "ls": 1.1, "li": 0.3}, "total_general": 260513.0}, {"name": "Montería", "si": {"total": 5814.0, "pct": 0.029, "cve": 0.272, "ls": 4.4, "li": 1.4}, "no": {"total": 132797.0, "pct": 0.663, "cve": 0.038, "ls": 71.3, "li": 61.3}, "sin_ingresos": {"total": 61703.0, "pct": 0.308, "cve": 0.062, "ls": 34.5, "li": 27.1}, "total_general": 200314.0}, {"name": "Neiva", "si": {"total": 16804.0, "pct": 0.096, "cve": 0.123, "ls": 11.9, "li": 7.3}, "no": {"total": 143580.0, "pct": 0.821, "cve": 0.03, "ls": 86.9, "li": 77.4}, "sin_ingresos": {"total": 14440.0, "pct": 0.083, "cve": 0.147, "ls": 10.6, "li": 5.9}, "total_general": 174824.0}, {"name": "Pasto", "si": {"total": 20467.0, "pct": 0.132, "cve": 0.086, "ls": 15.4, "li": 11.0}, "no": {"total": 117401.0, "pct": 0.756, "cve": 0.029, "ls": 79.9, "li": 71.2}, "sin_ingresos": {"total": 17499.0, "pct": 0.113, "cve": 0.125, "ls": 14.0, "li": 8.5}, "total_general": 155368.0}, {"name": "Pereira AM", "si": {"total": 39024.0, "pct": 0.114, "cve": 0.09, "ls": 13.4, "li": 9.4}, "no": {"total": 269750.0, "pct": 0.786, "cve": 0.034, "ls": 83.8, "li": 73.5}, "sin_ingresos": {"total": 34213.0, "pct": 0.1, "cve": 0.154, "ls": 13.0, "li": 7.0}, "total_general": 342987.0}, {"name": "Popayán", "si": {"total": 11034.0, "pct": 0.075, "cve": 0.113, "ls": 9.2, "li": 5.9}, "no": {"total": 108498.0, "pct": 0.741, "cve": 0.031, "ls": 78.6, "li": 69.6}, "sin_ingresos": {"total": 26941.0, "pct": 0.184, "cve": 0.095, "ls": 21.8, "li": 15.0}, "total_general": 146473.0}, {"name": "Quibdó", "si": {"total": 3327.0, "pct": 0.067, "cve": 0.15, "ls": 8.6, "li": 4.7}, "no": {"total": 39443.0, "pct": 0.791, "cve": 0.028, "ls": 83.4, "li": 74.8}, "sin_ingresos": {"total": 7093.0, "pct": 0.142, "cve": 0.111, "ls": 17.3, "li": 11.1}, "total_general": 49863.0}, {"name": "Riohacha", "si": {"total": 1278.0, "pct": 0.018, "cve": 0.223, "ls": 2.6, "li": 1.0}, "no": {"total": 69385.0, "pct": 0.972, "cve": 0.021, "ls": 100.0, "li": 93.2}, "sin_ingresos": {"total": 726.0, "pct": 0.01, "cve": 0.313, "ls": 1.6, "li": 0.4}, "total_general": 71389.0}, {"name": "Santa Marta", "si": {"total": 11092.0, "pct": 0.049, "cve": 0.172, "ls": 6.5, "li": 3.2}, "no": {"total": 212176.0, "pct": 0.931, "cve": 0.024, "ls": 97.5, "li": 88.6}, "sin_ingresos": {"total": 4685.0, "pct": 0.021, "cve": 0.175, "ls": 2.8, "li": 1.4}, "total_general": 227953.0}, {"name": "Sincelejo", "si": {"total": 9910.0, "pct": 0.082, "cve": 0.162, "ls": 10.8, "li": 5.6}, "no": {"total": 102643.0, "pct": 0.852, "cve": 0.027, "ls": 89.7, "li": 80.7}, "sin_ingresos": {"total": 7890.0, "pct": 0.066, "cve": 0.124, "ls": 8.1, "li": 5.0}, "total_general": 120443.0}, {"name": "Tunja", "si": {"total": 12295.0, "pct": 0.135, "cve": 0.094, "ls": 16.0, "li": 11.0}, "no": {"total": 58720.0, "pct": 0.644, "cve": 0.036, "ls": 68.9, "li": 59.9}, "sin_ingresos": {"total": 20215.0, "pct": 0.222, "cve": 0.07, "ls": 25.2, "li": 19.1}, "total_general": 91231.0}, {"name": "Valledupar", "si": {"total": 15046.0, "pct": 0.068, "cve": 0.155, "ls": 8.9, "li": 4.7}, "no": {"total": 146198.0, "pct": 0.661, "cve": 0.037, "ls": 70.9, "li": 61.2}, "sin_ingresos": {"total": 60098.0, "pct": 0.272, "cve": 0.079, "ls": 31.3, "li": 23.0}, "total_general": 221342.0}, {"name": "Villavicencio", "si": {"total": 30368.0, "pct": 0.114, "cve": 0.099, "ls": 13.6, "li": 9.2}, "no": {"total": 192560.0, "pct": 0.72, "cve": 0.033, "ls": 76.8, "li": 67.3}, "sin_ingresos": {"total": 44346.0, "pct": 0.166, "cve": 0.09, "ls": 19.5, "li": 13.7}, "total_general": 267274.0}], "total_row": {"name": "Total 23 ciudades", "si": {"total": 1788596.0, "pct": 0.139, "cve": 0.047, "ls": 15.2, "li": 12.7}, "no": {"total": 9607444.0, "pct": 0.748, "cve": 0.013, "ls": 76.8, "li": 72.9}, "sin_ingresos": {"total": 1441020.0, "pct": 0.112, "cve": 0.046, "ls": 12.2, "li": 10.2}, "total_general": 12837060.0}}}, "source": "DANE, Pulso Social.", "updated": "25 de septiembre de 2023", "notes": ["Los datos por ciudades son acumulados del trimestre febrero 2023, marzo 2023, abril 2023.", "Los coeficientes de variación (CVE) permiten evaluar la precisión de las estimaciones: excelentes entre 0% y 5%, buenos entre 5% y 10%, aceptables entre 10% y 15%. Si el CVE supera 15%, la estimación debe usarse solo con fines descriptivos (tendencia, no nivel), ya que no es muy precisa.", "Li: límite inferior. Ls: límite superior del intervalo de confianza (95%).", "La información para Medellín no se publica en este periodo porque no se alcanzó la cobertura de recolección esperada. Para la estimación de Total 23 ciudades se usó toda la información de encuestas completas recolectadas para el periodo."]}</script>
+<script>
+const DATA = JSON.parse(document.getElementById('data-blob').textContent);
+
+const SEGMENTS = [
+  {key:'sexo', label:'Sexo'},
+  {key:'edad', label:'Edad'},
+  {key:'hogar', label:'Hogar'},
+  {key:'ciudad', label:'Ciudad'},
+];
+
+const fmtInt = n => Math.round(n).toLocaleString('es-CO');
+const fmtPct = p => (p*100).toLocaleString('es-CO',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
+
+function qualityClass(cve){
+  const p = cve*100;
+  if(p <= 10) return 'good';
+  if(p <= 15) return 'ok';
+  return 'caution';
+}
+function qualityLabel(cve){
+  const p = cve*100;
+  if(p <= 5) return 'Precisión excelente';
+  if(p <= 10) return 'Precisión buena';
+  if(p <= 15) return 'Precisión aceptable';
+  return 'Estimación poco precisa — usar con cautela';
+}
+
+let state = { segment:'sexo', citySort:'desc', openRow:null };
+
+function renderDek(){
+  document.getElementById('dek').innerHTML =
+    `<b>${DATA.title.replace('cc8. ','')}</b> Encuesta del DANE en 23 ciudades y áreas metropolitanas, abril de 2023.`;
+}
+
+function renderHero(){
+  const b = DATA.national_benchmark;
+  const hero = document.getElementById('hero');
+  hero.innerHTML = `
+    <div class="hero-cell is-si">
+      <div class="hero-num">${fmtPct(b.si.pct)}</div>
+      <div class="hero-label">Sí puede ahorrar</div>
+    </div>
+    <div class="hero-cell">
+      <div class="hero-num">${fmtPct(b.no.pct)}</div>
+      <div class="hero-label">No puede ahorrar</div>
+    </div>
+    <div class="hero-cell">
+      <div class="hero-num">${fmtPct(b.sin_ingresos.pct)}</div>
+      <div class="hero-label">No tiene ingresos</div>
+    </div>
+    <div class="hero-foot">${b.name} · ${fmtInt(b.total_general)} personas consultadas</div>
+  `;
+}
+
+function renderTabs(){
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = '';
+  SEGMENTS.forEach(seg=>{
+    const btn = document.createElement('button');
+    btn.className = 'tab';
+    btn.textContent = seg.label;
+    btn.setAttribute('role','tab');
+    btn.setAttribute('aria-selected', state.segment===seg.key ? 'true':'false');
+    btn.addEventListener('click', ()=>{ state.segment = seg.key; state.openRow=null; render(); });
+    tabs.appendChild(btn);
+  });
+}
+
+function getRowsForSegment(){
+  const seg = DATA.segments[state.segment];
+  let rows = seg.rows.slice();
+  let totalRow = seg.total_row || null;
+  if(state.segment === 'ciudad'){
+    rows = rows.slice().sort((a,b)=>{
+      if(state.citySort==='alpha') return a.name.localeCompare(b.name,'es');
+      return b.si.pct - a.si.pct;
+    });
+  }
+  return {rows, totalRow};
+}
+
+function renderSortBtn(){
+  const btn = document.getElementById('sortBtn');
+  if(state.segment !== 'ciudad'){ btn.hidden = true; return; }
+  btn.hidden = false;
+  btn.textContent = state.citySort==='desc' ? '⇅ Ordenar A–Z' : '⇅ Ordenar por % Sí';
+  btn.onclick = ()=>{ state.citySort = state.citySort==='desc' ? 'alpha':'desc'; render(); };
+}
+
+function rowTemplate(row, isTotal){
+  const benchPct = DATA.national_benchmark.si.pct * 100;
+  const q = qualityClass(row.si.cve);
+  return `
+    <div class="row">
+      <button class="row-main" aria-expanded="false" data-name="${row.name}">
+        <span class="row-label ${isTotal?'is-total':''}">${row.name}</span>
+        <span class="bar-wrap">
+          <span class="bar-track">
+            <span class="seg seg-si" style="width:${row.si.pct*100}%"></span>
+            <span class="seg seg-no" style="width:${row.no.pct*100}%"></span>
+            <span class="seg seg-sin" style="width:${row.sin_ingresos.pct*100}%"></span>
+          </span>
+          <span class="bench-line" style="left:${benchPct}%"></span>
+        </span>
+        <span class="row-value">${fmtPct(row.si.pct)}</span>
+        <span class="q-dot q-${q}" title="${qualityLabel(row.si.cve)} (CVE ${fmtPct(row.si.cve)})"></span>
+      </button>
+      <div class="row-detail" hidden>
+        <div class="detail-grid">
+          <div class="detail-cell c-si">
+            <div class="detail-k">Sí puede ahorrar</div>
+            <div class="detail-v">${fmtInt(row.si.total)}</div>
+            <div class="detail-sub">IC95%: ${row.si.li.toFixed(1)}%–${row.si.ls.toFixed(1)}% · <span class="q-dot q-${qualityClass(row.si.cve)}"></span>${qualityLabel(row.si.cve)}</div>
+          </div>
+          <div class="detail-cell c-no">
+            <div class="detail-k">No puede ahorrar</div>
+            <div class="detail-v">${fmtInt(row.no.total)}</div>
+            <div class="detail-sub">IC95%: ${row.no.li.toFixed(1)}%–${row.no.ls.toFixed(1)}% · <span class="q-dot q-${qualityClass(row.no.cve)}"></span>${qualityLabel(row.no.cve)}</div>
+          </div>
+          <div class="detail-cell c-sin">
+            <div class="detail-k">No tiene ingresos</div>
+            <div class="detail-v">${fmtInt(row.sin_ingresos.total)}</div>
+            <div class="detail-sub">IC95%: ${row.sin_ingresos.li.toFixed(1)}%–${row.sin_ingresos.ls.toFixed(1)}% · <span class="q-dot q-${qualityClass(row.sin_ingresos.cve)}"></span>${qualityLabel(row.sin_ingresos.cve)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRows(){
+  const {rows, totalRow} = getRowsForSegment();
+  const container = document.getElementById('rows');
+  let html = rows.map(r=>rowTemplate(r,false)).join('');
+  if(totalRow){
+    html += rowTemplate(totalRow, true);
+  }
+  container.innerHTML = html;
+
+  container.querySelectorAll('.row-main').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const detail = btn.nextElementSibling;
+      const isOpen = !detail.hidden;
+      container.querySelectorAll('.row-detail').forEach(d=> d.hidden = true);
+      container.querySelectorAll('.row-main').forEach(b=> b.setAttribute('aria-expanded','false'));
+      if(!isOpen){
+        detail.hidden = false;
+        btn.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+}
+
+function renderMeta(){
+  document.getElementById('benchPct').textContent = fmtPct(DATA.national_benchmark.si.pct);
+  document.getElementById('panelTitle').textContent = DATA.segments[state.segment].label;
+  const body = document.getElementById('metaBody');
+  body.innerHTML = `
+    <p><b>Pregunta:</b> ${DATA.title}</p>
+    ${DATA.notes.map(n=>`<p>${n}</p>`).join('')}
+    <p><b>Fuente:</b> ${DATA.source} Actualizado el ${DATA.updated}.</p>
+  `;
+}
+
+function render(){
+  renderTabs();
+  renderSortBtn();
+  renderRows();
+  renderMeta();
+}
+
+renderDek();
+renderHero();
+render();
+</script>
+</body>
+</html>
